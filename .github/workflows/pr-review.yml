@@ -3,5 +3,10 @@ on: pull_request
 jobs:
   review:
     runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
     steps:
-      - run: echo "PR number ${{ github.event.pull_request.number }}"
+      - run: echo "PR #${{ github.event.pull_request.number }}"
