@@ -52,7 +52,8 @@ jobs:
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          workload_identity_provider: "projects/15704331308/locations/global/workloadIdentityPools/github-pool-v2/providers/github-provider"
+          service_account: "terraform-review-sa@project-420cebfc-3df7-4db5-96c.iam.gserviceaccount.com"
 
       - name: Set up Terraform variables
         run: |
