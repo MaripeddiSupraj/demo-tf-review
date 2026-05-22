@@ -56,16 +56,6 @@ jobs:
         working-directory: ai-agents/terraform-review-agent
         run: pip install -r requirements.txt
 
-      - name: Authenticate to GCP
-        if: ${{ secrets.GCP_SA_KEY != '' }}
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
-
-      - name: Pass GCP project ID to Terraform
-        if: ${{ secrets.GCP_PROJECT_ID != '' }}
-        run: echo 'project_id = "${{ secrets.GCP_PROJECT_ID }}"' > terraform.tfvars
-
       - name: Run AI Terraform Review
         id: review
         working-directory: ai-agents/terraform-review-agent
