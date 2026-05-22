@@ -8,18 +8,20 @@ variable "project_id" {
   type        = string
 }
 
-# Bucket with public access (security issue)
+# Secure bucket with public access prevention
 resource "google_storage_bucket" "public_data" {
-  name     = "${var.project_id}-public-data"
-  location = "US"
-}
-resource "google_storage_bucket_iam_member" "public_access" {
-  bucket = google_storage_bucket.public_data.name
-  role   = "roles/storage.objectViewer"
-  member = "allUsers"
+  name                        = "${var.project_id}-public-data"
+  location                    = "US"
+  public_access_prevention    = "enforced"
+  uniform_bucket_level_access = true
+  labels = {
+    environment = "production"
+    owner       = "platform-team"
+    name        = "Public data bucket"
+  }
 }
 
-# Bucket with proper labels
+# Bucket with proper labels and versioning
 resource "google_storage_bucket" "app_logs" {
   name     = "${var.project_id}-app-logs"
   location = "US"
@@ -28,27 +30,41 @@ resource "google_storage_bucket" "app_logs" {
     owner       = "platform-team"
     name        = "App logs"
   }
+  versioning {
+    enabled = true
+  }
 }
 
-# VM missing labels (policy violation)
+# VM with proper labels
 resource "google_compute_instance" "bastion" {
   name         = "bastion-host"
   machine_type = "e2-medium"
   zone         = "us-central1-a"
+  labels = {
+    environment = "production"
+    owner       = "platform-team"
+    name        = "Bastion host"
+  }
   boot_disk {
     initialize_params { image = "debian-cloud/debian-11" }
   }
   network_interface { network = "default" }
 }
 
-# Network
+# Network with labels
 resource "google_compute_network" "main" {
-  name = "main-network"
+  name                    = "main-network"
+  auto_create_subnetworks = true
+  labels = {
+    environment = "production"
+    owner       = "platform-team"
+    name        = "Main network"
+  }
 }
 
-# Overly permissive IAM (security issue)
+# Least-privilege IAM (no more owner role)
 resource "google_project_iam_member" "admin" {
   project = var.project_id
-  role    = "roles/owner"
+  role    = "roles/storage.objectAdmin"
   member  = "serviceAccount:tf-sa@${var.project_id}.iam.gserviceaccount.com"
 }
