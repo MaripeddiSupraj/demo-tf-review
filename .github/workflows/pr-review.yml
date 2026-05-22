@@ -56,9 +56,20 @@ jobs:
           workload_identity_provider: "projects/15704331308/locations/global/workloadIdentityPools/github-pool-v2/providers/github-provider"
           service_account: "terraform-review-sa@project-420cebfc-3df7-4db5-96c.iam.gserviceaccount.com"
 
+      - name: Debug - test terraform directly
+        run: |
+          terraform init -no-color -input=false 2>&1 || true
+          terraform plan -no-color -input=false -detailed-exitcode 2>&1 || true
+
       - name: Set up Terraform variables
         run: |
           echo 'project_id = "project-420cebfc-3df7-4db5-96c"' > terraform.tfvars
+
+      - name: Debug terraform plan error
+        run: |
+          terraform init -no-color -input=false 2>&1 | tail -5
+          echo "---"
+          terraform plan -no-color -input=false -detailed-exitcode 2>&1 | tail -20
 
       - name: Install agent dependencies
         working-directory: ai-agents/terraform-review-agent
