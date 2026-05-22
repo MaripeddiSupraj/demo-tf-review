@@ -65,12 +65,6 @@ jobs:
         run: |
           echo 'project_id = "project-420cebfc-3df7-4db5-96c"' > terraform.tfvars
 
-      - name: Debug terraform plan error
-        run: |
-          terraform init -no-color -input=false 2>&1 | tail -5
-          echo "---"
-          terraform plan -no-color -input=false -detailed-exitcode 2>&1 | tail -20
-
       - name: Install agent dependencies
         working-directory: ai-agents/terraform-review-agent
         run: pip install -r requirements.txt

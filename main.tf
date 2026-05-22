@@ -51,15 +51,10 @@ resource "google_compute_instance" "bastion" {
   network_interface { network = "default" }
 }
 
-# Network with labels
+# Network
 resource "google_compute_network" "main" {
   name                    = "main-network"
   auto_create_subnetworks = true
-  labels = {
-    environment = "production"
-    owner       = "platform-team"
-    name        = "Main network"
-  }
 }
 
 # Least-privilege IAM (no more owner role)
