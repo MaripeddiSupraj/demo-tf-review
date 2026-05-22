@@ -14,6 +14,7 @@ jobs:
       contents: read
       pull-requests: write
       issues: write
+      id-token: write
 
     services:
       redis:
@@ -57,7 +58,7 @@ jobs:
 
       - name: Set up Terraform variables
         run: |
-          echo 'project_id = "${{ secrets.GCP_PROJECT_ID }}"' > terraform.tfvars
+          echo 'project_id = "project-420cebfc-3df7-4db5-96c"' > terraform.tfvars
 
       - name: Install agent dependencies
         working-directory: ai-agents/terraform-review-agent
@@ -71,9 +72,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           REDIS_URL: redis://localhost:6379/0
-          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          GCP_PROJECT_ID: "project-420cebfc-3df7-4db5-96c"
           GCP_REGION: us-central1
-          TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
+          TF_VAR_project_id: "project-420cebfc-3df7-4db5-96c"
           TERRAFORM_DIR: ${{ github.workspace }}
         run: |
           python -c "
