@@ -52,3 +52,25 @@ resource "google_project_iam_member" "admin" {
   role    = "roles/owner"
   member  = "serviceAccount:tf-sa@${var.project_id}.iam.gserviceaccount.com"
 }
+
+# Firestore database (no PITR — policy violation)
+resource "google_firestore_database" "users_db" {
+  name        = "users-database"
+  location_id = "nam5"
+  type        = "FIRESTORE_NATIVE"
+  point_in_time_recovery_enablement = "POINT_IN_TIME_RECOVERY_DISABLED"
+}
+
+# Cloud NAT (cost concern)
+resource "google_compute_router" "main" {
+  name    = "main-router"
+  network = google_compute_network.main.id
+  region  = "us-central1"
+}
+resource "google_compute_router_nat" "main" {
+  name                               = "main-nat"
+  router                             = google_compute_router.main.name
+  region                             = "us-central1"
+  nat_ip_allocate_option             = "AUTO_ONLY"
+  source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
+}
