@@ -1,5 +1,8 @@
 name: Terraform Review Agent
-on: pull_request
+on:
+  pull_request:
+    paths: ["**.tf"]
+
 jobs:
   review:
     runs-on: ubuntu-latest
@@ -7,8 +10,11 @@ jobs:
       contents: read
       pull-requests: write
       issues: write
+      statuses: write
     steps:
       - uses: actions/checkout@v4
-      - uses: MaripeddiSupraj/ai-agents/terraform-review-agent/action@v1
+      - uses: MaripeddiSupraj/ai-agents/terraform-review-agent/action@master
         with:
           openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          terraform_dir: ${{ github.workspace }}
