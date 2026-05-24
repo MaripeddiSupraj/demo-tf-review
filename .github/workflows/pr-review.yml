@@ -9,7 +9,6 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-      issues: write
       statuses: write
     steps:
       - uses: actions/checkout@v4
@@ -18,3 +17,8 @@ jobs:
           openai_api_key: ${{ secrets.OPENAI_API_KEY }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           terraform_dir: ${{ github.workspace }}
+        env:
+          # AWS provider accepts any non-empty key at plan time (no real credentials needed)
+          AWS_ACCESS_KEY_ID: demo
+          AWS_SECRET_ACCESS_KEY: demo
+          AWS_REGION: us-east-1
